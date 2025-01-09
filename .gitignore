@@ -1,4 +1,6 @@
 # Binaries and Intermediates
 Debug/
 
+.cache/
+
 compile_commands.json
