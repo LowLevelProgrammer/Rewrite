@@ -24,6 +24,7 @@ public:
   std::string ToString();
   std::optional<std::string> GetLineAtOffset(size_t yOffset);
   std::optional<std::string> GetLine(size_t lineNumber);
+  const std::vector<std::string> &GetBuffer() { return m_Lines; }
 
 private:
   std::vector<std::string> m_Lines;

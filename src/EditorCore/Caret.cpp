@@ -1,4 +1,5 @@
 #include "Caret.h"
+#include "CustomAssert.h"
 #include <algorithm>
 #include <cstddef>
 
@@ -43,4 +44,7 @@ void Caret::MoveDown() {
   }
 }
 
-void Caret::SetPosition(Offset offset) { m_CaretPosition = offset; }
+void Caret::SetPosition(Offset offset) {
+  ASSERT_WITHIN_OR_EDGE_COLUMN_BOUNDS(offset, m_TextBuffer.GetBuffer());
+  m_CaretPosition = offset;
+}

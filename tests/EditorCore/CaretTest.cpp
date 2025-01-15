@@ -1,3 +1,4 @@
+#include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 
 #include "Caret.h"
@@ -34,19 +35,90 @@ protected:
 
 TEST_F(CaretTest, Initialize) { EXPECT_EQ(caret.GetPosition(), Offset(0, 0)); }
 
+TEST_F(CaretTest, SetCaretValid) {
+  caret.SetPosition({0, 0});
+  EXPECT_EQ(caret.GetPosition(), Offset(0, 0));
+}
+
+TEST_F(CaretTest, SetCaretValid2) {
+  // "Hello|"
+  caret.SetPosition({0, 5});
+  EXPECT_EQ(caret.GetPosition(), Offset(0, 5));
+}
+
+TEST_F(CaretTest, SetCaretValid3) {
+  // "|World!"
+  caret.SetPosition({1, 0});
+  EXPECT_EQ(caret.GetPosition(), Offset(1, 0));
+}
+
+TEST_F(CaretTest, SetCaretValid4) {
+  // "World!|"
+  caret.SetPosition({1, 6});
+  EXPECT_EQ(caret.GetPosition(), Offset(1, 6));
+}
+
+TEST_F(CaretTest, SetCaretValid5) {
+  // "Akash|"
+  caret.SetPosition({2, 5});
+  EXPECT_EQ(caret.GetPosition(), Offset(2, 5));
+}
+
+TEST_F(CaretTest, SetCaretInvalid) {
+  EXPECT_DEATH(caret.SetPosition({0, 6}),
+               "Offset not within or at the edge of column bounds");
+}
+TEST_F(CaretTest, SetCaretInvalid2) {
+  EXPECT_DEATH(caret.SetPosition({1, 7}),
+               "Offset not within or at the edge of column bounds");
+}
+TEST_F(CaretTest, SetCaretInvalid3) {
+  EXPECT_DEATH(caret.SetPosition({2, 6}),
+               "Offset not within or at the edge of column bounds");
+}
+TEST_F(CaretTest, SetCaretInvalid4) {
+  EXPECT_DEATH(caret.SetPosition({3, 0}), "Offset not within row bounds");
+}
+
 TEST_F(CaretTest, MoveRight) {
   // "|Hello"
   caret.MoveRight();
   // "H|ello"
   EXPECT_EQ(caret.GetPosition(), Offset(0, 1));
+}
 
+TEST_F(CaretTest, MoveRight2) {
+  EXPECT_EQ(caret.GetPosition(), Offset(0, 0));
+  caret.MoveRight();
   caret.MoveRight();
   caret.MoveRight();
   caret.MoveRight();
   caret.MoveRight();
   // "Hello|"
   EXPECT_EQ(caret.GetPosition(), Offset(0, 5));
+}
+
+TEST_F(CaretTest, MoveRightAtEOL) {
+  caret.SetPosition({0, 5});
+  // "Hello|"
+  EXPECT_EQ(caret.GetPosition(), Offset(0, 5));
 
   caret.MoveRight();
+  // "Hello"
+  // "|World!"
   EXPECT_EQ(caret.GetPosition(), Offset(1, 0));
+}
+
+TEST_F(CaretTest, MoveRightAtEOF) {
+  caret.SetPosition({2, 5});
+  // "Hello"
+  // "World!"
+  // "Akash|"
+  EXPECT_EQ(caret.GetPosition(), Offset(2, 5));
+
+  caret.MoveRight();
+  // "Hello"
+  // "World!"
+  // "Akash|"
+  EXPECT_EQ(caret.GetPosition(), Offset(2, 5));
 }
