@@ -24,6 +24,7 @@ void TextBuffer::InsertNewline(Offset offset) {
 void TextBuffer::RemoveLine(size_t yOffset) {}
 
 void TextBuffer::RemoveChar(Offset offset) {
+  // Return if buffer is empty
   if (m_Lines.size() == 1 && m_Lines[0].size() == 0 && offset == Offset(0, 0)) {
     return;
   }
